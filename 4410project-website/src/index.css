@@ -142,3 +142,67 @@
     margin-bottom: 20px;
     
   }
+
+  .books-button{
+    background-color: #205a93; 
+    color: white;
+    padding: 12px 15px;
+    margin: 8px;
+    font-size: 16px;
+    border: none; 
+    border-radius: 30px; 
+    cursor: pointer; 
+    transition: background-color 0.4s ease; 
+  }
+
+  .books-button:hover{
+    background: #53c3e2;
+  }
+
+  .submit-button{
+    background-color: darkred; 
+    color: white;
+    border-radius: 5px;
+    padding: 8px 15px; 
+    margin-bottom: 20px;
+    font-size: 16px;
+    border: none; 
+    cursor: pointer;  
+  }
+
+  .submit-button:hover{
+    background: red;
+  }
+
+  .pagination-nav{
+    margin-top: 20px;
+  }
+  .pagination {
+    background-color: #205a93;
+    border-radius: 8px;
+    padding: 10px 15px;
+    display:inline;      
+}
+
+  .page-item{
+    list-style-type: none;
+    display: inline;
+    padding: 15px;
+  }
+
+  .page-link{
+    color: white; 
+    text-decoration: none; 
+    font-size: 16px; 
+    padding: 8px 15px; 
+    border-radius: 20px; 
+  }
+
+  .page-link:hover{
+    color: #53c3e2; 
+  }
+  .active{
+    padding: 8px 15px; 
+    background-color: rgb(116, 124, 129); 
+    border-radius: 20px; 
+  }
