@@ -3,6 +3,7 @@ import Navbar from './components/Navbar.js'
 import Welcome from './components/Welcome.js'
 import Login from './components/Login.js'
 import AllBooks from './components/AllBooks.js'
+import AdminDashboard from "./components/Admin/AdminDashboard.js";
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Welcome />} />
         <Route path="books" element={<AllBooks />} />
         <Route path="login" element={<Login />} />
+        <Route path="admin" element={<AdminDashboard/>} />
       </Routes>
     </Router>
     </div>

@@ -2,9 +2,27 @@
       font-family: Arial, sans-serif;
   }
 
+  .body-links {
+    list-style: none;
+    gap: 20px;
+  }
+  
+  .body-links a {
+    text-decoration: none;
+    background-color: darkred;
+    color: white;
+    font-size: 18px;
+    padding: 8px 12px;
+    border-radius: 5px;
+  }
+  
+  .body-links a:hover {
+    background-color: red;
+  }
+
   .header-section{
     text-align: center;
-    background-color: rgb(36, 33, 33);
+    background-color: #272121;
     color: white;
     padding: 10px;
     margin: 0px;
@@ -44,7 +62,7 @@
 
 
 /*login/register page styling*/
-  .login-section {
+  .form-section {
     max-width: 600px;
     margin: auto;
     background: #f9f9f9; 
@@ -55,14 +73,19 @@
     margin-top: 50px;
   }
 
-  .login-register-input{
+  .form-label{
+    display: inline-block;
+    width: 90px;
+  }
+
+  .form-input{
     margin-bottom: 10px;
     padding: 8px;
     width: 200px;
     border-radius: 5px;
   }
 
-  .login-register-button{
+  .form-button{
     background-color: darkred; 
     color: white;
     padding: 10px 20px;
@@ -73,18 +96,7 @@
     transition: background-color 0.4s ease; 
   }
 
-  .login-register-button{
-    background-color: darkred; 
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none; 
-    border-radius: 30px; 
-    cursor: pointer; 
-    transition: background-color 0.4s ease; 
-  }
-
-  .login-register-button:hover{
+  .form-button:hover{
     background: red;
   }
 
@@ -104,7 +116,7 @@
 
 
 /*Search page styling*/
-  .books-page-container {
+  .display-page-container {
     max-width: 600px;
     margin: auto;
     background: #f9f9f9; 
@@ -122,17 +134,17 @@
   }
 
 
-  .books-container{
+  .display-container{
     columns: 2;
     column-gap: 1rem;
   }
 
-  .books-container >*{
+  .display-container >*{
     break-inside: avoid;  /*Prevents splitting of each book*/
   }
 
 
-  .book-info-block{
+  .display-info-block{
     background: white#e2eef4; 
     border-radius: 10px; 
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); 
@@ -143,8 +155,8 @@
     
   }
 
-  .books-button{
-    background-color: #205a93; 
+  .display-button{
+    background-color: darkred; 
     color: white;
     padding: 12px 15px;
     margin: 8px;
@@ -155,8 +167,8 @@
     transition: background-color 0.4s ease; 
   }
 
-  .books-button:hover{
-    background: #53c3e2;
+  .display-button:hover{
+    background: red;
   }
 
   .submit-button{
@@ -206,3 +218,41 @@
     background-color: rgb(116, 124, 129); 
     border-radius: 20px; 
   }
+
+/*Admin dashboard styling*/
+.admin-dashboard-container {
+  max-width: 600px;
+  margin: auto;
+  background: #f9f9f9; 
+  border-radius: 10px; 
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, .4); 
+  padding: 20px; 
+  text-align: center; 
+  margin-top: 50px;
+}
+
+.admin-button{
+  background-color: #205a93; 
+  color: white;
+  border-radius: 10px;
+  padding: 10px 15px; 
+  margin: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  border: none; 
+  cursor: pointer;  
+}
+
+.admin-button:hover{
+background-color: #53c3e2;
+}
+
+select {
+  margin-bottom: 20px;
+  width: 150px;
+  padding: 5px 35px 5px 5px;
+  font-size: 16px;
+  border: 1px solid #CCC;
+  height: 34px;
+}
+
