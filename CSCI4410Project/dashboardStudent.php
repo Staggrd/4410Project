@@ -1,7 +1,8 @@
 <link rel="stylesheet" href="style.css">
 <?php
     session_start();
-    require 'db.php';
+    require 'db.php'; //connects to the database
+
     if (!isset($_SESSION["user_id"])) {
         header("Location: login.php");
         exit;
@@ -15,6 +16,7 @@
     <button name="return_book">Return A Book</button> <!-- Added Function -->
     <button name="reserve_book">Reserve A Book</button> <!-- -->
     <button name="unreserve_book">Unreserve A Book</button> <!-- -->
+    <button name="notify_me">Notify Me About A Book</button> 
 </form>
 
 <?php
@@ -103,6 +105,23 @@ if (isset($_POST['checkout_book_submit'])) { //now if the books is not reserved 
         } catch (mysqli_sql_exception $e){
             echo "Something went wrong.";
         }
+
+        //ADDITION: If this user_id had this book_id in the notifications table, remove that row from the notifs table
+        $stmt = $conn->prepare("SELECT * FROM notifications WHERE book_id=? AND user_id=?"); //check if user_id had notifs for this book_id
+        $stmt->bind_param("ii", $book_id, $user_id);
+        $stmt->execute();
+        $stmt->store_result(); //store the result of stmt for comparison later
+
+        if ($stmt->num_rows > 0) { //if there are rows in notifs where user_id and book_id match...
+            $stmt = $conn->prepare("DELETE FROM notifications WHERE book_id=? AND user_id=?"); //prepare the delete statement
+            $stmt->bind_param("ii", $book_id, $user_id); //bind integers
+
+            try{
+                $stmt->execute(); //Delete that row from the notifications table
+            } catch (mysqli_sql_exception $e){
+                echo "Something went wrong."; //print if something whent wrong
+            }
+        }
     }
 }
 
@@ -176,5 +195,64 @@ if (isset($_POST['return_book_submit'])) {
     } catch (mysqli_sql_exception $e){
         echo "Something went wrong.";
     }
+
+    /* ADDITIONS: When any book is returned, we will check (1) if this book is reserved by another user. If that is the case, we will
+    only email that user saying "a book you have reserved is now available" or something similar using php's built-in "mail()" function.
+    (2) Then we check if this book is on anyone's notifications. If the book is not reserved AND at least 1 user has this book on their notifs,
+    we will get those user_id's emails and "mail()" those users saying "a book you wanted to be notified of is now available" or something similar.
+    */
+
+    $stmt = $conn->prepare("SELECT user_id FROM reservations WHERE book_id=?"); //see if there is a reservation on returned book
+    $stmt->bind_param("i", $book_id);
+    $stmt->execute();
+    $stmt->store_result(); //save for later if statements
+    $stmt->bind_result($user_id_notify); //lets also store the new user_id if exists
+    $stmt->fetch();
+
+    $stmt1 = $conn->prepare("SELECT user_id FROM notifications WHERE book_id=?"); //see if there is are other users that want to be notified on this book
+    $stmt1->bind_param("i", $book_id);
+    $stmt1->execute();
+    $result = $stmt1->get_result(); //since we will store this into an array later, we have to use "get_result()"
+
+    $users = []; //create an array to hold all the user_ids
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row['user_id']; //store the user_ids into the users array
+    }
+
+    if ($stmt->num_rows === 1) { //if this book is reserved by someone...
+        $stmt = $conn->prepare("SELECT email FROM users WHERE user_id=?"); //get their email from the users table
+        $stmt->bind_param("i", $user_id_notify);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($email); //bind the result to $email
+        $stmt->fetch();
+
+        $emailMsg = "A book which you have reserved is now available!\nLog in to check it out!";
+        $emailSubject = "Your Reserved Book is Available!"; //we prepare the canned mesage and subject
+
+        mail($email, $emailSubject, $emailMsg); //to: $email, subject: $emailSubject, message: $emailMsg
+        $stmt->close(); //let's close this so no one can pry into what the statement holds
+        $email = NULL; //and empty the "email" just in case
+    }
+    else if (!empty($users)) {
+
+        $emailMsg = "A book which you wanted to be notifed of is now available!\nGet it before it's gone!";
+        $emailSubject = "A Book is Now Available!"; //we prepare the canned mesage and subject
+
+        foreach ($users as $user_id_notify) { //I feel a little crazy for this
+            $stmt = $conn->prepare("SELECT email FROM users WHERE user_id=?"); //get each email from the users table
+            $stmt->bind_param("i", $user_id_notify);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($email); //bind the result to $email
+            $stmt->fetch();
+
+            mail($email, $emailSubject, $emailMsg); //to: $email, subject: $emailSubject, message: $emailMsg
+        }
+        $stmt->close(); //let's close this so no one can pry into what the statement holds
+        $email = NULL; //and empty the "email" just in case
+    }
+    
 }
+
 ?>
