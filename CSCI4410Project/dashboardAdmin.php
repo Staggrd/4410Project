@@ -37,6 +37,8 @@ function displayTable($result){
     <button name="display_users">Get Userlist</button> <!-- Added Function -->
     <button name="add_user">Add User</button> <!-- Added Function -->
     <button name="delete_user">Delete User</button> <!-- Added Function-->
+    <button name="most_borrowed_books">Most Borrowed Books</button> <!-- Added Function-->
+    <button name="overdue_books">Overdue Books</button> <!-- Added Function-->
 </form>
 
 <?php //now we will give all these buttons functionality
@@ -190,5 +192,30 @@ if (isset($_POST['update_book_submit'])) { //now we execute the previous form
     } catch (mysqli_sql_exception $e){
         echo "Something went wrong."; //Display if failed
     }
+}
+
+if (isset($_POST['most_borrowed_books'])) { // function for displaying the most borrowed books
+    $sql = "SELECT b.book_id, b.title, b.author, b.ISBN,
+     COUNT(c.book_id) AS times_Borrowed 
+    FROM books b 
+    JOIN checkouts c ON b.book_id = c.book_id 
+    GROUP BY b.book_id ORDER BY times_Borrowed DESC"; //save query to $sql
+
+    $result = $conn->query($sql);
+    // Call the function to display table
+     displayTable($result);
+}
+
+if (isset($_POST['overdue_books'])) { // function for displaying overdue books
+    $sql = "SELECT b.book_id, b.title, b.author, b.ISBN,
+     c.due_date, u.user_id, u.username, DATEDIFF(NOW(), c.due_date) AS days_Overdue 
+    FROM checkouts c 
+    JOIN users u ON u.user_id = c.user_id
+    JOIN books b ON b.book_id = c.book_id 
+    AND c.due_date < NOW() AND c.returned_date IS NULL"; //save query to $sql
+
+    $result = $conn->query($sql);
+    // Call the function to display table
+    displayTable($result);
 }
 ?>
